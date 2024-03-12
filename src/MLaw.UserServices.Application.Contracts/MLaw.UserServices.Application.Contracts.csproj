@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MLaw.UserServices.Domain.Shared\MLaw.UserServices.Domain.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RestSharp" Version="110.2.0" />
+		<PackageReference Include="Volo.Abp.Authorization" Version="6.0.3" />
+		<PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="6.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="IServices\" />
+	  <Folder Include="Responses\" />
+	  <Folder Include="Requests\" />
+	</ItemGroup>
+
+</Project>
