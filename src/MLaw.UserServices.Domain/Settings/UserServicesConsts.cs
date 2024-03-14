@@ -1,4 +1,4 @@
-﻿namespace MLaw.UserServices;
+﻿namespace MLaw.UserServices.Settings;
 
 public static class UserServicesConsts
 {

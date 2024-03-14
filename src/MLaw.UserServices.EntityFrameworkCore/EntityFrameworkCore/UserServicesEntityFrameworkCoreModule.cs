@@ -1,6 +1,6 @@
 ﻿using GIIS.KafkaServices.EntityFrameworkCore.DbContext.Implements;
 using Microsoft.Extensions.DependencyInjection;
-using MLaw.UserServices;
+using MLaw.UserServices.Settings;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
