@@ -16,9 +16,4 @@
 	  <PackageReference Include="Volo.Abp.Ddd.Domain" Version="6.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="IRepositories\" />
-  </ItemGroup>
-
 </Project>

@@ -6,7 +6,7 @@ namespace MLaw.UserServices;
 
 [DependsOn(
     typeof(UserServicesDomainSharedModule),
-    typeof(AbpDddApplicationContractsModule),
+  typeof(AbpDddApplicationContractsModule),
     typeof(AbpAuthorizationModule)
 )]
 public class UserServicesApplicationContractsModule : AbpModule

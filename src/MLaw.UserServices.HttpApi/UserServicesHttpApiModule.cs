@@ -1,6 +1,6 @@
 ﻿using Localization.Resources.AbpUi;
 using MLaw.UserServices.Localization;
-using Volo.Abp.Account;
+using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 
@@ -8,7 +8,7 @@ namespace MLaw.UserServices;
 
 [DependsOn(
     typeof(UserServicesApplicationContractsModule),
-    typeof(AbpAccountHttpApiModule)
+       typeof(AbpAspNetCoreMvcModule)
     )]
 public class UserServicesHttpApiModule : AbpModule
 {

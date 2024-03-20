@@ -5,7 +5,7 @@ using Volo.Abp.DependencyInjection;
 
 namespace MLaw.UserServices
 {
-    public interface IBaseRepository<TEntity, TDto> : ITransientDependency where TEntity : BaseEntities where TDto : BaseDTOs
+    public interface IBaseRepository<TEntity, TDto> : ITransientDependency where TEntity : BaseEntities where TDto : BaseDTO
     {
         /// <summary>
         /// Get all entities

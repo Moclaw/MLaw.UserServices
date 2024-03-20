@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MLaw.UserServices
 {
-    public record BaseDTOs
+    public record BaseDTO
     {
         public int Id { get; set; }
 

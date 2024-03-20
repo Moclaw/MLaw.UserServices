@@ -19,9 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="IServices\" />
 	  <Folder Include="Responses\" />
-	  <Folder Include="Requests\" />
 	</ItemGroup>
 
 </Project>

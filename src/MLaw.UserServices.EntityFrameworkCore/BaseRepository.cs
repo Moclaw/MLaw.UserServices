@@ -11,7 +11,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace MLaw.UserServices
 {
-    public class BaseRepository<TEntity, TDto> : IBaseRepository<TEntity, TDto> where TEntity : BaseEntities where TDto : BaseDTOs
+    public class BaseRepository<TEntity, TDto> : IBaseRepository<TEntity, TDto> where TEntity : BaseEntities where TDto : BaseDTO
     {
         private readonly IUserServicesDbContext _context;
         private readonly ILogger<BaseRepository<TEntity, TDto>> _logger;

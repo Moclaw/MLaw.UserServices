@@ -1,3 +1,4 @@
+using GIIS.KafkaServices.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.SqlServer;
+using Volo.Abp.Http.Client;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
@@ -25,13 +27,14 @@ using Volo.Abp.VirtualFileSystem;
 namespace MLaw.UserServices;
 
 [DependsOn(
-    typeof(UserServicesHttpApiModule),
-    typeof(AbpAutofacModule),
+ typeof(UserServicesHttpApiModule),
     typeof(UserServicesApplicationModule),
+    typeof(UserServicesEntityFrameworkCoreModule),
+    typeof(AbpAutofacModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpSwashbuckleModule),
-    typeof(AbpEntityFrameworkCoreSqlServerModule)
+    typeof(AbpEntityFrameworkCoreSqlServerModule),
+    typeof(AbpHttpClientModule)
 )]
 public class UserServicesHttpApiHostModule : AbpModule
 {
