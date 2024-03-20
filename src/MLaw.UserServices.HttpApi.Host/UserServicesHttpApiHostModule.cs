@@ -106,10 +106,10 @@ public class UserServicesHttpApiHostModule : AbpModule
             options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserServices API", Version = "v1" });
-                options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
-                options.EnableAnnotations();
                 options.HideAbpEndpoints();
+                options.CustomSchemaIds(t => t.FullName.Replace("+", "."));
+                options.EnableAnnotations();
             });
     }
 
