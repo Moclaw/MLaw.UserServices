@@ -263,3 +263,4 @@ src/MLaw.UserServices.Blazor.Server.Tiered/Logs/*
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
+/src/MLaw.UserServices.EntityFrameworkCore/Migrations

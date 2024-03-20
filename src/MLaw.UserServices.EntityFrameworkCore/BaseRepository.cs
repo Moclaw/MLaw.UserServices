@@ -1,13 +1,11 @@
 ﻿using GIIS.KafkaServices.EntityFrameworkCore.DbContext;
-using GIIS.KafkaServices.EntityFrameworkCore.DbContext.Implements;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.ObjectMapping;
+using YANLib.Core;
 
 namespace MLaw.UserServices
 {
@@ -21,522 +19,7 @@ namespace MLaw.UserServices
             _logger = logger;
         }
 
-        public int Delete(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().Find(id);
-                if (entity != null)
-                {
-                    _context.Set<TEntity>().Remove(entity);
-                    return _context.SaveChanges();
-                }
-                return 0;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Delete)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public int Delete(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Remove(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Delete)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public int Delete(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    _context.Set<TEntity>().RemoveRange(entity);
-                    return _context.SaveChanges();
-                }
-                return 0;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Delete)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public int Delete(List<TEntity> entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().RemoveRange(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Delete)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DeleteAsync(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().FindAsync(id);
-                if (entity.IsCompleted && entity.Result != null)
-                {
-                    _context.Set<TEntity>().Remove(entity.Result);
-                    return await _context.SaveChangesAsync();
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DeleteAsync)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DeleteAsync(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Remove(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DeleteAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DeleteAsync(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    _context.Set<TEntity>().RemoveRange(entity);
-                    return await _context.SaveChangesAsync();
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DeleteAsync)} - Error");
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DeleteAsync(List<TEntity> entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().RemoveRange(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DeleteAsync)} - Error");
-                throw;
-            }
-        }
-
-        public TEntity Disabled(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().Find(id);
-                if (entity != null)
-                {
-                    entity.IsDeleted = true;
-                    _context.Set<TEntity>().Update(entity);
-                    _context.SaveChanges();
-                    return entity;
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Disabled)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public TEntity Disabled(TEntity entity)
-        {
-            try
-            {
-                entity.IsDeleted = true;
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Disabled)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public int Disabled(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    entity.ForEach(x => x.IsDeleted = true);
-                    _context.Set<TEntity>().UpdateRange(entity);
-                    return _context.SaveChanges();
-                }
-                return 0;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Disabled)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public int Disabled(List<TEntity> entity)
-        {
-            try
-            {
-                entity.ForEach(x => x.IsDeleted = true);
-                _context.Set<TEntity>().UpdateRange(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Disabled)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> DisabledAsync(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().FindAsync(id);
-                if (entity.IsCompleted && entity.Result != null)
-                {
-                    entity.Result.IsDeleted = true;
-                    var result = _context.Set<TEntity>().Update(entity.Result);
-                    return await _context.SaveChangesAsync() > 0 ? result.Entity : default;
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DisabledAsync)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> DisabledAsync(TEntity entity)
-        {
-            try
-            {
-                entity.IsDeleted = true;
-                var result = _context.Set<TEntity>().Update(entity);
-                return await _context.SaveChangesAsync() > 0 ? result.Entity : default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DisabledAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DisabledAsync(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    entity.ForEach(x => x.IsDeleted = true);
-                    _context.Set<TEntity>().UpdateRange(entity);
-                    return await _context.SaveChangesAsync();
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DisabledAsync)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> DisabledAsync(List<TEntity> entity)
-        {
-            try
-            {
-                entity.ForEach(x => x.IsDeleted = true);
-                _context.Set<TEntity>().UpdateRange(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(DisabledAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public TEntity Enabled(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().Find(id);
-                if (entity != null)
-                {
-                    entity.IsDeleted = false;
-                    _context.Set<TEntity>().Update(entity);
-                    _context.SaveChanges();
-                    return entity;
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Enabled)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public TEntity Enabled(TEntity entity)
-        {
-            try
-            {
-                entity.IsDeleted = false;
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Enabled)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public int Enabled(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    entity.ForEach(x => x.IsDeleted = false);
-                    _context.Set<TEntity>().UpdateRange(entity);
-                    return _context.SaveChanges();
-                }
-                return 0;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Enabled)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public int Enabled(List<TEntity> entity)
-        {
-            try
-            {
-                entity.ForEach(x => x.IsDeleted = false);
-                _context.Set<TEntity>().UpdateRange(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Enabled)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> EnabledAsync(Guid id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>().FindAsync(id);
-                if (entity.IsCompleted && entity.Result != null)
-                {
-                    entity.Result.IsDeleted = false;
-                    var result = _context.Set<TEntity>().Update(entity.Result);
-                    return await _context.SaveChangesAsync() > 0 ? result.Entity : default;
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(EnabledAsync)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> EnabledAsync(TEntity entity)
-        {
-            try
-            {
-                entity.IsDeleted = false;
-                var result = _context.Set<TEntity>().Update(entity);
-                return await _context.SaveChangesAsync() > 0 ? result.Entity : default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(EnabledAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> EnabledAsync(List<Guid> id)
-        {
-            try
-            {
-                var entity = _context.Set<TEntity>()
-                                     .AsNoTracking()
-                                     .Where(x => id.Contains(x.Id)).ToList();
-                if (entity != null)
-                {
-                    entity.ForEach(x => x.IsDeleted = false);
-                    _context.Set<TEntity>().UpdateRange(entity);
-                    return await _context.SaveChangesAsync();
-                }
-                return default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(EnabledAsync)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> EnabledAsync(List<TEntity> entity)
-        {
-            try
-            {
-                entity.ForEach(x => x.IsDeleted = false);
-                _context.Set<TEntity>().UpdateRange(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(EnabledAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public IEnumerable<TEntity> GetAll()
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .ToList();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAll)} - Error");
-                throw;
-            }
-        }
-
-        public IEnumerable<TEntity> GetAll(int skip, int take)
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .Skip(skip)
-                               .Take(take)
-                               .ToList();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAll)} - Error");
-                throw;
-            }
-        }
-
-        public IEnumerable<TEntity> GetAll(Func<TEntity, bool> predicate)
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .Where(predicate).ToList();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAll)} - Error");
-                throw;
-            }
-        }
-
-        public IEnumerable<TEntity> GetAll(Func<TEntity, bool> predicate, int skip, int take)
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .Where(predicate)
-                               .Skip(skip)
-                               .Take(take)
-                               .ToList();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAll)} - Error");
-                throw;
-            }
-        }
-
-        public async ValueTask<IEnumerable<TEntity>> GetAllAsync()
+        public async ValueTask<IEnumerable<TEntity>> GetAll()
         {
             try
             {
@@ -546,12 +29,15 @@ namespace MLaw.UserServices
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAllAsync)} - Error");
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetAll)}-Exception";
+
+                _logger.LogError(e, message);
+
                 throw;
             }
         }
 
-        public async ValueTask<IEnumerable<TEntity>> GetAllAsync(int skip, int take)
+        public async ValueTask<IEnumerable<TEntity>> GetAll(int skip, int take)
         {
             try
             {
@@ -563,77 +49,57 @@ namespace MLaw.UserServices
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAllAsync)} - Error");
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetAll)}-Exception: " + "{Skip}-{Take}";
+
+                _logger.LogError(e, message, skip, take);
+
                 throw;
             }
         }
 
-        public async ValueTask<IEnumerable<TEntity>> GetAllAsync(Func<TEntity, bool> predicate)
+        public async ValueTask<IEnumerable<TEntity>> GetAll(Func<TEntity, bool> predicate)
         {
             try
             {
-                return await ValueTask.FromResult(_context.Set<TEntity>().AsNoTracking().Where(predicate).ToList());
+                return await new ValueTask<IEnumerable<TEntity>>(_context.Set<TEntity>()
+                                                                         .AsNoTracking()
+                                                                         .Where(predicate)
+                                                                         .ToList());
+
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAllAsync)} - Error");
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetAll)}-Exception: " + "{Predicate}";
+
+                _logger.LogError(e, message, predicate.ToString());
+
                 throw;
             }
 
         }
 
-        public async ValueTask<IEnumerable<TEntity>> GetAllAsync(Func<TEntity, bool> predicate, int skip, int take)
+        public async ValueTask<IEnumerable<TEntity>> GetAll(Func<TEntity, bool> predicate, int skip, int take)
         {
             try
             {
-                return await ValueTask.FromResult(_context.Set<TEntity>()
-                                                          .AsNoTracking()
-                                                          .Where(predicate)
-                                                          .Skip(skip)
-                                                          .Take(take)
-                                                          .ToList());
+                return await new ValueTask<IEnumerable<TEntity>>(_context.Set<TEntity>()
+                                                                          .AsNoTracking()
+                                                                          .Where(predicate).Skip(skip)
+                                                                          .Take(take)
+                                                                          .ToList());
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetAllAsync)} - Error");
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetAll)}-Exception: " + "{Predicate}-{Skip}-{Take}";
+
+                _logger.LogError(e, message, predicate.ToString(), skip, take);
+
                 throw;
             }
+
         }
 
-        public TEntity GetById(Guid id)
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .FirstOrDefault(x => x.Id == id);
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetById)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public IEnumerable<TEntity> GetById(List<Guid> id)
-        {
-            try
-            {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .Where(x => id.Contains(x.Id))
-                               .ToList();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetById)}" + " - Error: {Id}";
-                _logger.LogError(e, message, id);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> GetByIdAsync(Guid id)
+        public async ValueTask<TEntity> GetById(Guid id)
         {
             try
             {
@@ -643,333 +109,475 @@ namespace MLaw.UserServices
             }
             catch (Exception e)
             {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetByIdAsync)}" + " - Error: {Id}";
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetById)}-Exception: " + "{Id}";
+
                 _logger.LogError(e, message, id);
+
                 throw;
             }
+
+
         }
 
-        public IEnumerable<TEntity> GetListByKey(string key, string value)
+        public async ValueTask<IEnumerable<TEntity>> GetListByKey(string key, string value)
         {
             try
             {
-                return _context.Set<TEntity>()
-                               .AsNoTracking()
-                               .Where(x => EF.Property<string>(x, key) == value)
-                               .ToList();
+                return await _context.Set<TEntity>()
+                                     .AsNoTracking()
+                                     .Where(x => x.GetType().GetProperty(key).GetValue(x).ToString() == value)
+                                     .ToListAsync();
             }
             catch (Exception e)
             {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetListByKey)}" + " - Error: {Key} - {Value}";
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetListByKey)}-Exception: " + "{Key}-{Value}";
+
                 _logger.LogError(e, message, key, value);
+
                 throw;
             }
+
         }
 
-        public async ValueTask<IEnumerable<TEntity>> GetListByKeyAsync(string key, string value)
+        public async ValueTask<TEntity> Add(TDto dto)
         {
             try
             {
-                return await ValueTask.FromResult(_context.Set<TEntity>()
-                                                          .AsNoTracking()
-                                                          .Where(x => EF.Property<string>(x, key) == value)
-                                                          .ToList());
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(GetListByKeyAsync)}" + " - Error: {Key} - {Value}";
-                _logger.LogError(e, message, key, value);
-                throw;
-            }
-        }
-
-        public TEntity Insert(TDto dto)
-        {
-            try
-            {
-                var entity = _context.Find<TEntity>(dto.Id);
-
-                var entityType = entity.GetType();
                 var dtoType = dto.GetType();
+                var entityType = typeof(TEntity);
+                var entity = Activator.CreateInstance(entityType);
 
-                var properties = entityType.GetProperties();
-                foreach (var property in properties)
+                foreach (var property in dtoType.GetProperties())
                 {
-                    var dtoProperty = dtoType.GetProperty(property.Name);
-                    if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead)
+                    var entityProperty = entityType.GetProperty(property.Name);
+
+                    if (entityProperty != null)
                     {
-                        property.SetValue(entity, dtoProperty.GetValue(dto));
+                        entityProperty.SetValue(entity, property.GetValue(dto));
                     }
                 }
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return entity;
+
+                var item = (TEntity)entity;
+                item.CreatedAt = DateTime.UtcNow;
+
+                await _context.Set<TEntity>().AddAsync(item);
+                return (TEntity)entity;
             }
             catch (Exception e)
             {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Insert)}" + " - Error: {Dto}";
-                _logger.LogError(e, message, dto);
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Add)}-Exception: " + "{Dto}";
+
+                _logger.LogError(e, message, dto.Serialize());
+
                 throw;
             }
         }
 
-        public int Insert(List<TEntity> entity)
+
+
+        public async ValueTask<int> Add(IEnumerable<TEntity> entity)
         {
             try
             {
-                _context.Set<TEntity>().AddRange(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Insert)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public TEntity Insert(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Add(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Insert)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> InsertAsync(TDto dto)
-        {
-            try
-            {
-                var entity = _context.Find<TEntity>(dto.Id);
-
-                var entityType = entity.GetType();
-                var dtoType = dto.GetType();
-
-                var properties = entityType.GetProperties();
-                foreach (var property in properties)
-                {
-                    var dtoProperty = dtoType.GetProperty(property.Name);
-                    if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead)
-                    {
-                        property.SetValue(entity, dtoProperty.GetValue(dto));
-                    }
-                }
-                _context.Set<TEntity>().Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(InsertAsync)}" + " - Error: {Dto}";
-                _logger.LogError(e, message, dto);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> InsertAsync(List<TEntity> entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().AddRange(entity);
+                await _context.Set<TEntity>().AddRangeAsync(entity);
                 return await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(InsertAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Add)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
                 throw;
             }
         }
 
-        public async ValueTask<int> InsertAsync(List<TDto> entities)
+        public async ValueTask<int> Add(IEnumerable<TDto> entity)
         {
             try
             {
-                var entity = _context.Find<TEntity>(entities.FirstOrDefault().Id);
+                var dtoType = typeof(TDto);
+                var entityType = typeof(TEntity);
+                var entities = new List<TEntity>();
 
-                var entityType = entity.GetType();
-                var dtoType = entities.FirstOrDefault().GetType();
-
-                var properties = entityType.GetProperties();
-                foreach (var property in properties)
+                foreach (var dto in entity)
                 {
-                    var dtoProperty = dtoType.GetProperty(property.Name);
-                    if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead)
+                    var entityInstance = Activator.CreateInstance(entityType);
+
+                    foreach (var property in dtoType.GetProperties())
                     {
-                        property.SetValue(entity, dtoProperty.GetValue(entities.FirstOrDefault()));
-                    }
-                }
-                _context.Set<TEntity>().Update(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(InsertAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entities);
-                throw;
-            }
-          
-        }
+                        var entityProperty = entityType.GetProperty(property.Name);
 
-        public async ValueTask<TEntity> InsertAsync(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Add(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(InsertAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public TEntity Update(TDto dto)
-        {
-            try
-            {
-                var entity = _context.Find<TEntity>(dto.Id);
-
-                var entityType = entity.GetType();
-                var dtoType = dto.GetType();
-
-                var properties = entityType.GetProperties();
-                foreach (var property in properties)
-                {
-                    var dtoProperty = dtoType.GetProperty(property.Name);
-                    if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead && property.Name != nameof(BaseEntities.Id))
-                    {
-                        property.SetValue(entity, dtoProperty.GetValue(dto));
-                    }
-                }
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Update)}" + " - Error: {Dto}";
-                _logger.LogError(e, message, dto);
-                throw;
-            }
-        }
-
-        public TEntity Update(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Update(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Update)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public int Update(List<TEntity> entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().UpdateRange(entity);
-                return _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(Update)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<TEntity> UpdateAsync(TDto dto)
-        {
-            try
-            {
-                var entity = _context.Find<TEntity>(dto.Id);
-
-                var entityType = entity.GetType();
-                var dtoType = entity.GetType();
-
-                var properties = entityType.GetProperties();
-                foreach (var property in properties)
-                {
-                    var dtoProperty = dtoType.GetProperty(property.Name);
-                    if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead && property.Name != nameof(BaseEntities.Id))
-                    {
-                        property.SetValue(entity, dtoProperty.GetValue(entity));
-                    }
-                }
-                _context.Set<TEntity>().Update(entity);
-                return await _context.SaveChangesAsync() > 0 ? entity : default;
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(UpdateAsync)}" + " - Error: {Dto}";
-                _logger.LogError(e, message, dto);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> UpdateAsync(List<TEntity> entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().UpdateRange(entity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(UpdateAsync)}" + " - Error: {Entity}";
-                _logger.LogError(e, message, entity);
-                throw;
-            }
-        }
-
-        public async ValueTask<int> UpdateAsync(List<TDto> dtos)
-        {
-            try
-            {
-                foreach (var dto in dtos)
-                {
-                    var entity = _context.Find<TEntity>(dto.Id);
-
-                    var entityType = entity.GetType();
-                    var dtoType = dto.GetType();
-
-                    var properties = entityType.GetProperties();
-                    foreach (var property in properties)
-                    {
-                        var dtoProperty = dtoType.GetProperty(property.Name);
-                        if (dtoProperty != null && dtoProperty.CanWrite && property.CanRead && property.Name != nameof(BaseEntities.Id))
+                        if (entityProperty != null)
                         {
-                            property.SetValue(entity, dtoProperty.GetValue(dto));
+                            entityProperty.SetValue(entityInstance, property.GetValue(dto));
                         }
                     }
-                    _context.Set<TEntity>().Update(entity);
+
+                    var item = (TEntity)entityInstance;
+                    item.CreatedAt = DateTime.UtcNow;
+
+                    entities.Add(item);
                 }
+
+                await _context.Set<TEntity>().AddRangeAsync(entities);
                 return await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                string message = $"{nameof(BaseRepository<TEntity, TDto>)} - {nameof(UpdateAsync)}" + " - Error: {Dto}";
-                _logger.LogError(e, message, dtos);
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Add)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
                 throw;
             }
+
+        }
+
+        public async ValueTask<TEntity> Add(TEntity entity)
+        {
+            try
+            {
+                entity.CreatedAt = DateTime.UtcNow;
+                await _context.Set<TEntity>().AddAsync(entity);
+                return entity;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Add)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<int> Delete(Guid id)
+        {
+            try
+            {
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                _context.Set<TEntity>().Remove(entity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Delete)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id);
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<int> Delete(TEntity entity)
+        {
+            try
+            {
+                _context.Set<TEntity>().Remove(entity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Delete)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<int> Delete(IEnumerable<Guid> id)
+        {
+            try
+            {
+                var entities = await _context.Set<TEntity>().Where(x => id.Contains(x.Id)).ToListAsync();
+                _context.Set<TEntity>().RemoveRange(entities);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Delete)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id.Serialize());
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<int> Delete(IEnumerable<TEntity> entity)
+        {
+            try
+            {
+                _context.Set<TEntity>().RemoveRange(entity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Delete)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<TEntity> Disabled(Guid id)
+        {
+            try
+            {
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                entity.IsDeleted = true;
+                entity.UpdatedAt = DateTime.UtcNow;
+                return entity;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Disabled)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id);
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<TEntity> Disabled(TEntity entity)
+        {
+            try
+            {
+                var entityCheck = await _context.Set<TEntity>().FindAsync(entity.Id);
+                entityCheck.IsDeleted = true;
+                await _context.SaveChangesAsync();
+                return entityCheck;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Disabled)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<int> Disabled(IEnumerable<Guid> id)
+        {
+            try
+            {
+                var entities = await _context.Set<TEntity>().Where(x => id.Contains(x.Id)).ToListAsync();
+                entities.ForEach(x => { x.IsDeleted = true; x.UpdatedAt = DateTime.UtcNow; });
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Disabled)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id.Serialize());
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<int> Disabled(IEnumerable<TEntity> entity)
+        {
+            try
+            {
+                entity.ToList().ForEach(x => { x.IsDeleted = true; x.UpdatedAt = DateTime.UtcNow; });
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Disabled)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<TEntity> Enabled(Guid id)
+        {
+            try
+            {
+                var entity = await _context.Set<TEntity>().FindAsync(id);
+                entity.IsDeleted = false;
+                entity.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Enabled)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id);
+
+                throw;
+            }
+        }
+
+        public async ValueTask<TEntity> Enabled(TEntity entity)
+        {
+            try
+            {
+                var entityCheck = await _context.Set<TEntity>().FindAsync(entity.Id);
+                entityCheck.IsDeleted = false;
+                entityCheck.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return entityCheck;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Enabled)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<int> Enabled(IEnumerable<Guid> id)
+        {
+            try
+            {
+                var entities = await _context.Set<TEntity>().Where(x => id.Contains(x.Id)).ToListAsync();
+                entities.ForEach(x => { x.IsDeleted = false; x.UpdatedAt = DateTime.UtcNow; });
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Enabled)}-Exception: " + "{Id}";
+
+                _logger.LogError(e, message, id.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<int> Enabled(IEnumerable<TEntity> entity)
+        {
+            try
+            {
+
+                entity.ToList().ForEach(x => { x.IsDeleted = false; x.UpdatedAt = DateTime.UtcNow; });
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Enabled)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+
+        }
+
+
+        public async ValueTask<TEntity> Update(TDto dto)
+        {
+            try
+            {
+                var entity = await _context.Set<TEntity>().FindAsync(dto.Id);
+                var entityType = entity.GetType();
+
+                foreach (var property in dto.GetType().GetProperties().Where(x => x.GetValue(dto).IsNotNull()))
+                {
+                    var entityProperty = entityType.GetProperty(property.Name);
+
+                    if (entityProperty.PropertyType.IsClass)
+                    {
+                        continue;
+                    }
+
+                    if (entityProperty.IsNotNull() && entityProperty.CanWrite && property.GetValue(dto).IsNotNull())
+                    {
+                        entityProperty.SetValue(entity, property.GetValue(dto));
+                    }
+                }
+
+                entity.UpdatedAt = DateTime.UtcNow;
+
+                var entry = _context.Set<TEntity>().Update(entity);
+
+                return await _context.SaveChangesAsync() > 0 ? entry.Entity : default;
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Update)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, dto.Serialize());
+
+                throw;
+            }
+        }
+
+        public async ValueTask<int> Update(IEnumerable<TEntity> entity)
+        {
+            try
+            {
+                entity.ToList().ForEach(x => x.UpdatedAt = DateTime.UtcNow);
+                _context.Set<TEntity>().UpdateRange(entity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Update)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+
+        }
+
+        public async ValueTask<int> Update(IEnumerable<TDto> entity)
+        {
+            try
+            {
+                var entityType = typeof(TEntity);
+                var entities = new List<TEntity>();
+
+                foreach (var dto in entity)
+                {
+                    var entityInstance = await _context.Set<TEntity>().FindAsync(dto.Id);
+
+                    foreach (var property in dto.GetType().GetProperties().Where(x => x.GetValue(dto).IsNotNull()))
+                    {
+                        var entityProperty = entityType.GetProperty(property.Name);
+
+                        if (entityProperty.PropertyType.IsClass)
+                        {
+                            continue;
+                        }
+
+                        if (entityProperty.IsNotNull() && entityProperty.CanWrite && property.GetValue(dto).IsNotNull())
+                        {
+                            entityProperty.SetValue(entityInstance, property.GetValue(dto));
+                        }
+                    }
+
+                    entityInstance.UpdatedAt = DateTime.UtcNow;
+
+                    entities.Add(entityInstance);
+                }
+
+                _context.Set<TEntity>().UpdateRange(entities);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(Update)}-Exception: " + "{Entity}";
+
+                _logger.LogError(e, message, entity.Serialize());
+
+                throw;
+            }
+
         }
     }
 }

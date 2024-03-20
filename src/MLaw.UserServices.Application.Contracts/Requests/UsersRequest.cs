@@ -1,6 +1,6 @@
-﻿namespace MLaw.UserServices.DTOs
+﻿namespace MLaw.UserServices.Application.Contracts.Requests
 {
-    public record UsersDTO : BaseDTO
+    public class UsersRequest
     {
         public string Name { get; set; }
         public string Email { get; set; }

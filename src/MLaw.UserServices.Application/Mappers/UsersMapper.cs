@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MLaw.UserServices.Mappers
 {
-    public class UserMapper : Profile
+    public class UsersMapper : Profile
     {
-        public UserMapper()
+        public UsersMapper()
         {
-            CreateMap<Application.Contracts.Requests.UserRequest, Entities.Users>()
+            CreateMap<Application.Contracts.Requests.UsersRequest, Entities.Users>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());

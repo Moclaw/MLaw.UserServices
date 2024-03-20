@@ -13,13 +13,8 @@
 		<ProjectReference Include="..\MLaw.UserServices.Domain\MLaw.UserServices.Domain.csproj" />
 		<PackageReference Include="Volo.Abp.EntityFrameworkCore.SqlServer" Version="6.0.3" />
 		<PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="6.0.3" />
-	</ItemGroup>
+		<PackageReference Include="Tynab.YANLib" Version="4.0.1" />
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-			<PrivateAssets>compile; contentFiles; build; buildMultitargeting; buildTransitive; analyzers; native</PrivateAssets>
-		</PackageReference>
 	</ItemGroup>
 
 </Project>

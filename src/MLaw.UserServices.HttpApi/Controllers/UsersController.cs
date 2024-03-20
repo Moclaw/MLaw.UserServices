@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MLaw.UserServices.Application.Contracts.IServices;
 using MLaw.UserServices.Application.Contracts.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MLaw.UserServices.Controllers
@@ -25,7 +21,7 @@ namespace MLaw.UserServices.Controllers
             return Ok(await _userServices.GetUserRequest(1));
         }
         [HttpPost]
-        public async ValueTask<IActionResult> Post([FromBody] UserRequest request)
+        public async ValueTask<IActionResult> Post([FromBody] UsersRequest request)
         {
             return Ok(await _userServices.CreateUserRequest(request));
         }
