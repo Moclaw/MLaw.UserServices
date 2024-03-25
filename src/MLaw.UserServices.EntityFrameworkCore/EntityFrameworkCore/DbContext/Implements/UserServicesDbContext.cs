@@ -21,9 +21,11 @@ public class UserServicesDbContext : AbpDbContext<UserServicesDbContext>, IUserS
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
+
         builder.Entity<RolesUsers>(c => c.HasNoKey());
 
         builder.ConfigureUserServices();
+
+        base.OnModelCreating(builder);
     }
 }

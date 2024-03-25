@@ -119,6 +119,26 @@ namespace MLaw.UserServices
 
         }
 
+        public async ValueTask<TEntity> GetByKey(string key, string value)
+        {
+            try
+            {
+                return await _context.Set<TEntity>()
+                                     .AsNoTracking()
+                                     .FirstOrDefaultAsync(x => x.GetType().GetProperty(key).GetValue(x).ToString() == value);
+            }
+            catch (Exception e)
+            {
+                string message = $"{nameof(BaseRepository<TEntity, TDto>)}-{nameof(GetByKey)}-Exception: " + "{Key}-{Value}";
+
+                _logger.LogError(e, message, key, value);
+
+                throw;
+            }
+
+        }
+
+
         public async ValueTask<IEnumerable<TEntity>> GetListByKey(string key, string value)
         {
             try

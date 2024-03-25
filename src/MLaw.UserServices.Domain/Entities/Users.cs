@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MLaw.UserServices.Entities
 {
@@ -10,6 +11,11 @@ namespace MLaw.UserServices.Entities
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
+        public string City { get; set; } = "";
+        public string Country { get; set; } = "";
+        public string ZipCode { get; set; } = "";
+        public bool IsEmailConfirmed { get; set; } = false;
+        public bool IsPhoneConfirmed { get; set; } = false;
     }
 }

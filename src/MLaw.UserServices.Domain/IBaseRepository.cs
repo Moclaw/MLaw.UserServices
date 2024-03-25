@@ -39,6 +39,16 @@ namespace MLaw.UserServices
         /// <param name="id"></param>
         /// <returns></returns>
         ValueTask<TEntity> GetById(Guid id);
+
+        /// <summary>
+        /// Get entity by key async
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+
+        ValueTask<TEntity> GetByKey(string key, string value);
+
         /// <summary>
         /// Get list of entities by key async
         /// </summary>

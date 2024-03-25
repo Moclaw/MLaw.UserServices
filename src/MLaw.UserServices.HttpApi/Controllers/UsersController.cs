@@ -15,15 +15,15 @@ namespace MLaw.UserServices.Controllers
         {
             _userServices = userServices;
         }
-        [HttpGet]
-        public async ValueTask<IActionResult> Get()
-        {
-            return Ok(await _userServices.GetUserRequest(1));
-        }
-        [HttpPost]
-        public async ValueTask<IActionResult> Post([FromBody] UsersRequest request)
-        {
-            return Ok(await _userServices.CreateUserRequest(request));
-        }
+        //[HttpGet]
+        //public async ValueTask<IActionResult> Get()
+        //{
+        //    return Ok(await _userServices.GetUserRequest(1));
+        //}
+        //[HttpPost]
+        //public async ValueTask<IActionResult> Post([FromBody] UsersRequest request)
+        //{
+        //    return Ok(await _userServices.CreateUserRequest(request));
+        //}
     }
 }

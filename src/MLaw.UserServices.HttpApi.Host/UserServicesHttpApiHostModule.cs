@@ -1,6 +1,7 @@
 using GIIS.KafkaServices.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,29 +12,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Volo.Abp;
-using Volo.Abp.Account;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.SqlServer;
+using Volo.Abp.EntityFrameworkCore.PostgreSql;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
-using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 
 namespace MLaw.UserServices;
 
 [DependsOn(
- typeof(UserServicesHttpApiModule),
+    typeof(UserServicesHttpApiModule),
     typeof(UserServicesApplicationModule),
     typeof(UserServicesEntityFrameworkCoreModule),
     typeof(AbpAutofacModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpEntityFrameworkCoreSqlServerModule),
+    typeof(AbpEntityFrameworkCorePostgreSqlModule),
     typeof(AbpHttpClientModule)
 )]
 public class UserServicesHttpApiHostModule : AbpModule
@@ -42,25 +41,17 @@ public class UserServicesHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
 
-        Configure<AbpDbContextOptions>(o => o.UseSqlServer());
-        ConfigureUrls(configuration);
+
+        Configure<AbpDbContextOptions>(options =>
+        {
+            options.UseNpgsql();
+        });
+
         ConfigureConventionalControllers();
         ConfigureLocalization();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
-    }
-
-    private void ConfigureUrls(IConfiguration configuration)
-    {
-        Configure<AppUrlOptions>(options =>
-        {
-            options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"].Split(','));
-
-            options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
-            options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
-        });
     }
 
     private void ConfigureVirtualFileSystem(ServiceConfigurationContext context)

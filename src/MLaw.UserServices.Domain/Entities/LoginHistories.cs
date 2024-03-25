@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MLaw.UserServices.Entities
 {
-    public class LoginHistories : BaseEntities
+    [Table("LoginHistories")]
+    public sealed class LoginHistories : BaseEntities
     {
         public Guid UserId { get; set; }
         public string IPAddress { get; set; }
@@ -11,5 +13,7 @@ namespace MLaw.UserServices.Entities
         public string Device { get; set; }
         public string OS { get; set; }
         public string Browser { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

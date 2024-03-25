@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MLaw.UserServices.Entities
 {
-    public class RefreshToken
+    [Table("RefreshTokens")]
+    public sealed class RefreshToken
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
